@@ -135,3 +135,6 @@ cd C:\path\to\your\new-project
 
 本規則集為開放使用，歡迎依據自身需求修改與分享。
 
+## Verification
+- Last verified: 2026-02-18 (Public Access Test)
+
