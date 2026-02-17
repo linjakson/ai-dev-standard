@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新專案開發流程規範</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --surface2: #334155;
+            --border: #475569;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent2: #818cf8;
+            --green: #4ade80;
+            --orange: #fb923c;
+            --red: #f87171;
+            --yellow: #facc15;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1a1040 100%);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(129, 140, 248, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            position: relative;
+        }
+
+        /* Sections */
+        .section {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2 .num {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: var(--bg);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            min-width: 28px;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--accent);
+        }
+
+        h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 1.2rem 0 0.5rem;
+            color: var(--accent2);
+        }
+
+        /* Flow diagram */
+        .flow-diagram {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .flow-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-box {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(129, 140, 248, 0.15));
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            text-align: center;
+            min-width: 160px;
+            font-size: 0.9rem;
+        }
+
+        .flow-box .step-num {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .flow-box .step-title {
+            font-weight: 600;
+        }
+
+        .flow-box .step-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .flow-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        /* Main flow */
+        .main-flow {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .flow-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+        }
+
+        .flow-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .flow-line {
+            width: 2px;
+            height: 20px;
+            background: var(--border);
+        }
+
+        .flow-content {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            background: var(--surface2);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-content.gate {
+            border-left: 3px solid var(--orange);
+            background: rgba(251, 146, 60, 0.1);
+        }
+
+        .flow-content.boss {
+            border-left: 3px solid var(--accent2);
+            background: rgba(129, 140, 248, 0.1);
+        }
+
+        .flow-content.deploy {
+            border-left: 3px solid var(--green);
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: var(--surface2);
+            padding: 0.7rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        td {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover td {
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        pre {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.6;
+            margin: 0.8rem 0;
+            color: var(--text-muted);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 0.4rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .tag.green {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--green);
+        }
+
+        .tag.orange {
+            background: rgba(251, 146, 60, 0.2);
+            color: var(--orange);
+        }
+
+        .tag.blue {
+            background: rgba(56, 189, 248, 0.2);
+            color: var(--accent);
+        }
+
+        .tag.purple {
+            background: rgba(129, 140, 248, 0.2);
+            color: var(--accent2);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+
+        .alert.info {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 3px solid var(--accent);
+        }
+
+        .alert.warn {
+            background: rgba(251, 146, 60, 0.1);
+            border-left: 3px solid var(--orange);
+        }
+
+        /* Branch diagram */
+        .branch-diagram {
+            background: var(--bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+
+        .branch-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0;
+        }
+
+        .branch-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .branch-bar {
+            height: 3px;
+            flex: 1;
+            border-radius: 2px;
+        }
+
+        .branch-label {
+            min-width: 220px;
+            font-size: 0.82rem;
+        }
+
+        .branch-desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Role cards */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .role-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .role-card .role-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-card .role-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-card .role-duty {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: left;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .section {
+                padding: 1.2rem;
+            }
+
+            .flow-row {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .role-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 新專案開發流程規範</h1>
+            <p>多工程師協作 · AI 輔助 Code Review · 老闆最終審批</p>
+        </div>
+
+        <!-- 一、流程總覽 -->
+        <div class="section">
+            <h2><span class="num">一</span>流程總覽</h2>
+            <div class="flow-diagram">
+                <div class="flow-row">
+                    <div class="flow-box">
+                        <div class="step-num">STEP 1</div>
+                        <div class="step-title">開 Repo + 初始化</div>
+                        <div class="step-desc">branch 保護、CODEOWNERS、AI 規則檔</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="step-num">STEP 2</div>
+                        <div class="step-title">建立開發端</div>
+                        <div class="step-desc">各工程師 clone、本地 dev server</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="step-num">STEP 3</div>
+                        <div class="step-title">建立 CI/CD</div>
+                        <div class="step-desc">CI 自動檢查 + AI Review</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="step-num">STEP 4</div>
+                        <div class="step-title">建立伺服端</div>
+                        <div class="step-desc">preview + production 環境</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-box">
+                        <div class="step-num">STEP 5</div>
+                        <div class="step-title">驗收完整流程</div>
+                        <div class="step-desc">端到端跑一遍確認</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 二、日常開發流程 -->
+        <div class="section">
+            <h2><span class="num">二</span>日常開發流程</h2>
+            <div class="main-flow">
+                <div class="flow-step">
+                    <div class="flow-connector">
+                        <div class="flow-dot"></div>
+                        <div class="flow-line"></div>
+                    </div>
+                    <div class="flow-content">
+                        <strong>工程師從 Issue Board 領任務</strong>
+                        <div style="color:var(--text-muted);font-size:0.85rem">開 <code>feature/issue-編號-簡述</code> branch
+                            開發</div>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-connector">
+                        <div class="flow-dot"></div>
+                        <div class="flow-line"></div>
+                    </div>
+                    <div class="flow-content">
+                        <strong>Push → 自動建立 PR</strong>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-connector">
+                        <div class="flow-dot" style="background:var(--orange)"></div>
+                        <div class="flow-line"></div>
+                    </div>
+                    <div class="flow-content gate">
+                        <strong>🤖 第一關：自動化檢查</strong>
+                        <div style="font-size:0.85rem;margin-top:0.3rem">
+                            ✅ CI（lint + test + build）<br>
+                            ✅ AI Code Review（風格、安全性、變更範圍）<br>
+                            ✅ 自動部署 Preview 環境<br>
+                            <span style="color:var(--red)">❌ 未通過 → 打回工程師修改</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-connector">
+                        <div class="flow-dot" style="background:var(--accent2)"></div>
+                        <div class="flow-line"></div>
+                    </div>
+                    <div class="flow-content boss">
+                        <strong>👔 第二關：老闆審批</strong>
+                        <div style="font-size:0.85rem;margin-top:0.3rem">
+                            👁️ 查看 Preview 畫面<br>
+                            📄 閱讀 AI Review 摘要<br>
+                            ✅ 確認功能符合需求
+                        </div>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="flow-connector">
+                        <div class="flow-dot" style="background:var(--green)"></div>
+                    </div>
+                    <div class="flow-content deploy">
+                        <strong>🚀 老闆 Approve → 合併 PR → 自動部署 Production</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三、各階段詳細說明 -->
+        <div class="section">
+            <h2><span class="num">三</span>各階段詳細說明</h2>
+
+            <h3>階段 1：開 Repo + 初始化</h3>
+            <table>
+                <tr>
+                    <th>步驟</th>
+                    <th>說明</th>
+                </tr>
+                <tr>
+                    <td>建立 Git Repo</td>
+                    <td>GitHub / GitLab / Gitea 皆可</td>
+                </tr>
+                <tr>
+                    <td>設定 branch 保護</td>
+                    <td><code>main</code> 禁止直接 push，只接受 PR 合併</td>
+                </tr>
+                <tr>
+                    <td>設定 PR 規則</td>
+                    <td>至少 1 人 approve（老闆）+ CI 必須通過</td>
+                </tr>
+                <tr>
+                    <td>設定 CODEOWNERS</td>
+                    <td><code>* @老闆帳號</code>，所有 PR 自動指派老闆 review</td>
+                </tr>
+                <tr>
+                    <td>初始化專案結構</td>
+                    <td>複製 AI 規則檔（AGENTS.md, CLAUDE.md, GEMINI.md）</td>
+                </tr>
+                <tr>
+                    <td>初始化 .ai-memory/</td>
+                    <td>建立記憶目錄結構（見 AGENTS.md）</td>
+                </tr>
+            </table>
+            <pre># CODEOWNERS 檔案內容（放在 repo 根目錄）
+* @老闆的GitHub帳號</pre>
+
+            <h3>階段 2：建立開發端</h3>
+            <table>
+                <tr>
+                    <th>步驟</th>
+                    <th>說明</th>
+                </tr>
+                <tr>
+                    <td>各工程師 clone repo</td>
+                    <td>各自本地開發，互不干擾</td>
+                </tr>
+                <tr>
+                    <td>安裝依賴</td>
+                    <td><code>npm install</code> / <code>pip install</code> 等</td>
+                </tr>
+                <tr>
+                    <td>確認本地 dev server</td>
+                    <td>確保每個人都能在本地看到程式結果</td>
+                </tr>
+                <tr>
+                    <td>首次 push</td>
+                    <td>推到 <code>develop</code> 分支作為開發基準</td>
+                </tr>
+            </table>
+
+            <h3>階段 3：建立 CI/CD Pipeline</h3>
+
+            <h4>CI（持續整合）— Repo 層級設定</h4>
+            <p>每個 PR 建立時自動執行：</p>
+            <pre># .github/workflows/ci.yml 範例
+name: CI
+on: [pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安裝依賴
+        run: npm install
+      - name: 程式碼檢查
+        run: npm run lint
+      - name: 單元測試
+        run: npm test
+      - name: 建置確認
+        run: npm run build</pre>
+
+            <h4>AI Code Review — 自動化第一關</h4>
+            <table>
+                <tr>
+                    <th>工具選項</th>
+                    <th>說明</th>
+                </tr>
+                <tr>
+                    <td><strong>CodeRabbit</strong></td>
+                    <td>SaaS，接 GitHub 即用，自動寫 review comments</td>
+                </tr>
+                <tr>
+                    <td><strong>GitHub Copilot Review</strong></td>
+                    <td>GitHub 原生，需 Copilot 授權</td>
+                </tr>
+                <tr>
+                    <td><strong>PR-Agent (Codium)</strong></td>
+                    <td>開源可自建，支援摘要 + 建議 + 自動標籤</td>
+                </tr>
+            </table>
+            <p>AI Review 負責檢查：</p>
+            <ul>
+                <li>✅ 程式碼風格與命名規範</li>
+                <li>✅ 基本錯誤（空 catch、未使用變數）</li>
+                <li>✅ 安全性（硬編碼密碼、注入風險）</li>
+                <li>✅ 變更範圍（是否改了不該改的檔案）</li>
+                <li>✅ 產生 <strong>AI 摘要</strong>（方便老闆快速了解改了什麼）</li>
+            </ul>
+
+            <h4>CD — Preview 部署</h4>
+            <pre>PR #42 → https://pr-42.preview.example.com
+PR #43 → https://pr-43.preview.example.com</pre>
+            <div class="alert info">每個 PR 獨立 preview URL，避免多人 PR 互相覆蓋。</div>
+
+            <h3>階段 4：建立伺服端</h3>
+            <table>
+                <tr>
+                    <th>環境</th>
+                    <th>對應分支</th>
+                    <th>用途</th>
+                </tr>
+                <tr>
+                    <td><span class="tag orange">Preview</span></td>
+                    <td>各 PR 分支</td>
+                    <td>合併前預覽，每個 PR 獨立 URL</td>
+                </tr>
+                <tr>
+                    <td><span class="tag green">Production</span></td>
+                    <td><code>main</code></td>
+                    <td>正式環境，合併後自動部署</td>
+                </tr>
+            </table>
+            <p>部署方式選項：</p>
+            <table>
+                <tr>
+                    <th>方案</th>
+                    <th>適用場景</th>
+                </tr>
+                <tr>
+                    <td><strong>Vercel / Netlify</strong></td>
+                    <td>前端專案，自動 preview + production</td>
+                </tr>
+                <tr>
+                    <td><strong>Docker + Webhook</strong></td>
+                    <td>全端專案，伺服器收到 webhook 自動拉取部署</td>
+                </tr>
+                <tr>
+                    <td><strong>GitHub Actions + SSH</strong></td>
+                    <td>自建環境，CI 跑完後 SSH 到伺服器部署</td>
+                </tr>
+            </table>
+
+            <h3>階段 5：驗收完整流程</h3>
+            <ul class="checklist">
+                <li>工程師開 feature branch，push 成功</li>
+                <li>PR 自動建立，CI 自動開始跑</li>
+                <li>AI Review 自動留下 review comments</li>
+                <li>Preview 環境自動部署，URL 可訪問</li>
+                <li>老闆收到通知，可查看 preview + AI 摘要</li>
+                <li>老闆 approve 後，PR 可合併</li>
+                <li>合併後 production 自動部署</li>
+                <li>Production 環境功能正常</li>
+            </ul>
+        </div>
+
+        <!-- 四、分支策略 -->
+        <div class="section">
+            <h2><span class="num">四</span>分支策略</h2>
+            <div class="branch-diagram">
+                <div class="branch-line">
+                    <div class="branch-dot" style="background:var(--green)"></div>
+                    <div class="branch-label"><strong>main</strong></div>
+                    <div class="branch-bar" style="background:var(--green)"></div>
+                    <div class="branch-desc">正式環境</div>
+                </div>
+                <div style="padding-left:1.5rem;color:var(--text-muted);font-size:0.8rem">↑ PR 合併（老闆 approve）</div>
+                <div class="branch-line">
+                    <div class="branch-dot" style="background:var(--accent)"></div>
+                    <div class="branch-label"><strong>develop</strong></div>
+                    <div class="branch-bar" style="background:var(--accent)"></div>
+                    <div class="branch-desc">開發整合</div>
+                </div>
+                <div style="padding-left:1.5rem;color:var(--text-muted);font-size:0.8rem">↑ PR 合併（CI 通過即可）</div>
+                <div class="branch-line">
+                    <div class="branch-dot" style="background:var(--accent2)"></div>
+                    <div class="branch-label"><strong>feature/issue-42-login</strong></div>
+                    <div class="branch-bar" style="background:var(--accent2)"></div>
+                    <div class="branch-desc">功能分支</div>
+                </div>
+                <div class="branch-line">
+                    <div class="branch-dot" style="background:var(--accent2)"></div>
+                    <div class="branch-label"><strong>feature/issue-43-payment</strong></div>
+                    <div class="branch-bar" style="background:var(--accent2)"></div>
+                    <div class="branch-desc">功能分支</div>
+                </div>
+                <div class="branch-line">
+                    <div class="branch-dot" style="background:var(--red)"></div>
+                    <div class="branch-label"><strong>hotfix/fix-critical-bug</strong></div>
+                    <div class="branch-bar" style="background:var(--red)"></div>
+                    <div class="branch-desc">緊急修復</div>
+                </div>
+            </div>
+            <table>
+                <tr>
+                    <th>分支類型</th>
+                    <th>命名規範</th>
+                    <th>從哪開</th>
+                    <th>合到哪</th>
+                </tr>
+                <tr>
+                    <td><span class="tag purple">feature</span></td>
+                    <td><code>feature/issue-編號-簡述</code></td>
+                    <td>develop</td>
+                    <td>develop → main</td>
+                </tr>
+                <tr>
+                    <td><span class="tag orange">hotfix</span></td>
+                    <td><code>hotfix/簡述</code></td>
+                    <td>main</td>
+                    <td>main + develop</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 五、衝突預防 -->
+        <div class="section">
+            <h2><span class="num">五</span>衝突預防</h2>
+            <table>
+                <tr>
+                    <th>規則</th>
+                    <th>說明</th>
+                </tr>
+                <tr>
+                    <td>📅 每天 rebase</td>
+                    <td>工程師每天從 develop rebase 最新程式碼</td>
+                </tr>
+                <tr>
+                    <td>📢 大改動公告</td>
+                    <td>重構或架構變更前，在群組公告</td>
+                </tr>
+                <tr>
+                    <td>📦 模組分工</td>
+                    <td>盡量避免兩人同時改同一模組</td>
+                </tr>
+                <tr>
+                    <td>📏 小 PR 原則</td>
+                    <td>每個 PR ≤ 300 行變更，方便 review</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 六、通知機制 -->
+        <div class="section">
+            <h2><span class="num">六</span>通知機制</h2>
+            <div class="alert info">讓老闆能快速審核，不成為瓶頸</div>
+            <table>
+                <tr>
+                    <th>事件</th>
+                    <th>通知方式</th>
+                    <th>內容</th>
+                </tr>
+                <tr>
+                    <td>PR 建立</td>
+                    <td>LINE / Slack / Email</td>
+                    <td>PR 連結 + AI 摘要</td>
+                </tr>
+                <tr>
+                    <td>CI 通過</td>
+                    <td>自動標記 ✅</td>
+                    <td>Preview URL</td>
+                </tr>
+                <tr>
+                    <td>CI 失敗</td>
+                    <td>通知工程師</td>
+                    <td>錯誤日誌連結</td>
+                </tr>
+                <tr>
+                    <td>等待 approve 超過 2h</td>
+                    <td>再次提醒老闆</td>
+                    <td>—</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 七、角色職責 -->
+        <div class="section">
+            <h2><span class="num">七</span>角色職責</h2>
+            <div class="role-grid">
+                <div class="role-card">
+                    <div class="role-icon">👔</div>
+                    <div class="role-name">老闆</div>
+                    <div class="role-duty">
+                        • 最終 Approve<br>
+                        • 確認功能正確<br>
+                        • 優先級決策
+                    </div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">👨‍💻</div>
+                    <div class="role-name">工程師</div>
+                    <div class="role-duty">
+                        • 開發功能<br>
+                        • 修復 Bug<br>
+                        • 解決合併衝突<br>
+                        • 回應 AI Review
+                    </div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">🤖</div>
+                    <div class="role-name">AI Review</div>
+                    <div class="role-duty">
+                        • 第一關自動檢查<br>
+                        • 產生 Review 摘要<br>
+                        • 標記風險項目
+                    </div>
+                </div>
+                <div class="role-card">
+                    <div class="role-icon">⚙️</div>
+                    <div class="role-name">CI/CD</div>
+                    <div class="role-duty">
+                        • 自動跑測試<br>
+                        • 部署 Preview<br>
+                        • 部署 Production
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            新專案開發流程規範 · 基於《那些 Agent 神文沒告訴你的事》實操方法論 · 2025
+        </div>
+
+    </div>
+</body>
+
+</html>

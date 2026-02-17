@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安裝依賴
+        run: npm install
+
+      - name: 程式碼檢查
+        run: npm run lint
+
+      - name: 單元測試
+        run: npm test
+
+      - name: 建置確認
+        run: npm run build

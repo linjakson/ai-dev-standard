@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent 搭建實操指南 — 影片報告</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-card-hover: #1a2744;
+            --accent-primary: #e94560;
+            --accent-secondary: #0f3460;
+            --accent-gradient: linear-gradient(135deg, #e94560, #0f3460);
+            --accent-glow: rgba(233, 69, 96, 0.3);
+            --text-primary: #eaeaea;
+            --text-secondary: #a8a8b3;
+            --text-muted: #6c6c80;
+            --border-color: rgba(233, 69, 96, 0.15);
+            --success: #00d2ff;
+            --warning: #ffc107;
+            --info: #7b68ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(233, 69, 96, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(15, 52, 96, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(123, 104, 238, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            animation: bgPulse 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            padding: 80px 20px 60px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(233, 69, 96, 0.03) 60deg, transparent 120deg, rgba(15, 52, 96, 0.05) 180deg, transparent 240deg, rgba(123, 104, 238, 0.03) 300deg, transparent 360deg);
+            animation: heroRotate 30s linear infinite;
+        }
+
+        @keyframes heroRotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--accent-primary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e94560, #ff6b81, #0f3460, #00d2ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .meta-item:hover {
+            background: rgba(233, 69, 96, 0.08);
+            border-color: rgba(233, 69, 96, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .meta-item .icon {
+            font-size: 1.1rem;
+        }
+
+        /* Video Embed */
+        .video-section {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px var(--accent-glow);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 60px;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--accent-gradient);
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(233, 69, 96, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 20px var(--accent-glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card p, .card li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+        }
+
+        .card ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Full-width card */
+        .card-full {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 36px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .card-full:hover {
+            border-color: rgba(233, 69, 96, 0.3);
+        }
+
+        .card-full h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-full p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.9;
+        }
+
+        .card-full ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .card-full ul li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .card-full ul li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: var(--info);
+            font-size: 0.7rem;
+            top: 6px;
+        }
+
+        /* Highlight boxes */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(233, 69, 96, 0.08), rgba(15, 52, 96, 0.12));
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 16px 0;
+        }
+
+        .highlight-box.warning {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(255, 152, 0, 0.05));
+            border-color: rgba(255, 193, 7, 0.2);
+        }
+
+        .highlight-box.info {
+            background: linear-gradient(135deg, rgba(123, 104, 238, 0.08), rgba(0, 210, 255, 0.05));
+            border-color: rgba(123, 104, 238, 0.2);
+        }
+
+        .highlight-box h4 {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .highlight-box p, .highlight-box li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        thead {
+            background: rgba(233, 69, 96, 0.1);
+        }
+
+        th {
+            padding: 14px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-primary);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Flow chart style */
+        .flow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 20px 0;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            position: relative;
+        }
+
+        .flow-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .flow-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            z-index: 1;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+
+        .flow-line {
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(180deg, rgba(233, 69, 96, 0.4), rgba(15, 52, 96, 0.2));
+        }
+
+        .flow-content {
+            padding: 4px 0 24px;
+        }
+
+        .flow-content h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .flow-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Key takeaway */
+        .takeaway {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+
+        .takeaway::before {
+            content: '💡';
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .takeaway h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #e94560, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .takeaway p {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero .subtitle { font-size: 1rem; }
+            .section-title { font-size: 1.4rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            .meta-info { flex-direction: column; align-items: center; }
+        }
+
+        /* Scroll animation observer */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge">📺 YouTube 影片報告</span>
+            <h1>那些 Agent 神文沒告訴你的事<br>照著做，系統只會更爛</h1>
+            <p class="subtitle">AI Agent 搭建實操指南 — 完整內容整合報告</p>
+            <div class="meta-info">
+                <div class="meta-item">
+                    <span class="icon">📺</span>
+                    <span>頻道：數字黑魔法</span>
+                </div>
+                <div class="meta-item">
+                    <span class="icon">🔗</span>
+                    <a href="https://www.youtube.com/watch?v=b_9D7T0n4RA" target="_blank" style="color: inherit; text-decoration: none;">
+                        觀看原始影片
+                    </a>
+                </div>
+                <div class="meta-item">
+                    <span class="icon">🐦</span>
+                    <span>@MrsZaaa</span>
+                </div>
+                <div class="meta-item">
+                    <span class="icon">📧</span>
+                    <span>info@catchonlabs.com</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Embed -->
+    <div class="video-section">
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/b_9D7T0n4RA" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen 
+                    title="那些 Agent 神文没告诉你的事：照着做，系统只会更烂 【AI agent 搭建实操指南】">
+            </iframe>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Section 1: 核心觀點 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2 class="section-title">核心觀點與設計原則</h2>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem;">
+                本影片批判了盲目照搬「Agent 神文」（過度理論化或複雜的指南）可能導致系統效率低下、適得其反的現象。
+                強調 AI Agent 設計與傳統軟體設計有根本區別，提倡<strong style="color: var(--accent-primary);">從小問題入手、逐步迭代</strong>的實用方法。
+            </p>
+            <div class="card-grid">
+                <div class="card">
+                    <span class="card-icon">🎯</span>
+                    <h3>以解決實際問題為導向</h3>
+                    <p>AI Agent 的設計應該聚焦在解決實際問題上，而非追求複雜的架構設計。不要為了用 Agent 而用 Agent。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">⚡</span>
+                    <h3>簡單問題用 API 就好</h3>
+                    <p>如果一個問題可以透過簡單的 API 呼叫解決，就不要使用 Agent。過度設計只會增加系統複雜度和故障風險。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🔗</span>
+                    <h3>多步驟 ≠ 需要 Agent</h3>
+                    <p>多步驟流程不一定需要 Agent，使用鏈式工作流（Workflow）可能更合適且更有效率。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🗣️</span>
+                    <h3>何時才需要對話式 Agent</h3>
+                    <p>真正需要對話式 Agent 的場景是：流程需要人工參與，或者功能選項非常多的時候。</p>
+                </div>
+            </div>
+
+            <div class="takeaway">
+                <h3>核心理念</h3>
+                <p>不要一開始就追求完美架構，應該從小問題逐步迭代。過度設計是 AI Agent 開發中最常見的陷阱。</p>
+            </div>
+        </section>
+
+        <!-- Section 2: 架構選擇 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2 class="section-title">架構選擇 — Agent vs Workflow</h2>
+            </div>
+
+            <div class="card-full">
+                <h3>🏗️ 什麼時候該用什麼？</h3>
+                <p>做出正確的架構選擇是 Agent 開發成敗的關鍵。以下是不同場景下的建議：</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>場景</th>
+                                <th>推薦方案</th>
+                                <th>說明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>單一 API 請求</td>
+                                <td><strong style="color: var(--success);">直接調用</strong></td>
+                                <td>不需要 Agent 或 Workflow，直接呼叫 API 即可</td>
+                            </tr>
+                            <tr>
+                                <td>固定多步驟流程</td>
+                                <td><strong style="color: var(--success);">鏈式 Workflow</strong></td>
+                                <td>步驟固定、可預期的流程用 Workflow 更穩定</td>
+                            </tr>
+                            <tr>
+                                <td>需要人工介入判斷</td>
+                                <td><strong style="color: var(--warning);">對話式 Agent</strong></td>
+                                <td>流程中需要人類參與決策時，使用 Agent</td>
+                            </tr>
+                            <tr>
+                                <td>功能選項極多</td>
+                                <td><strong style="color: var(--warning);">對話式 Agent</strong></td>
+                                <td>使用者需要動態選擇多種功能時</td>
+                            </tr>
+                            <tr>
+                                <td>非確定性決策路徑</td>
+                                <td><strong style="color: var(--accent-primary);">Agent + Workflow 混合</strong></td>
+                                <td>結合兩者，Agent 做決策，Workflow 做執行</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="highlight-box warning">
+                <h4>⚠️ 避坑指南</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 8px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0;">•</span>
+                        避免「過度設計」— 不要在問題還不複雜時就套用複雜架構
+                    </li>
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 8px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0;">•</span>
+                        System Prompt（系統提示詞）的設計應從簡單開始，逐步迭代完善
+                    </li>
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 8px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0;">•</span>
+                        LLM 的行為具有天然不確定性，要做好容錯設計
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: 能力增強 - 工具 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2 class="section-title">能力增強 — 工具 (Tools)</h2>
+            </div>
+
+            <div class="card-full">
+                <h3>🔧 透過工具擴展 Agent 的能力</h3>
+                <p>
+                    工具（Tools）是讓 Agent 從「只會說話」進化為「能做事」的關鍵。透過引入工具，Agent 可以呼叫外部 API、查詢資料庫、操作文件系統等，
+                    大幅擴展其實際應用場景。
+                </p>
+                <ul>
+                    <li>定義清晰的工具描述，讓 LLM 理解何時以及如何使用工具</li>
+                    <li>工具呼叫結果需要結構化地寫回上下文，幫助模型快速識別關鍵資訊</li>
+                    <li>做好工具呼叫的錯誤處理和重試機制</li>
+                    <li>控制可用工具數量，避免模型「選擇困難」</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box info">
+                <h4>💡 工具設計建議</h4>
+                <p style="margin: 0;">
+                    工具描述（Tool Description）的品質直接影響 Agent 的能力表現。好的工具描述應該包含：
+                    <strong>功能說明、輸入參數格式、輸出格式範例、使用場景說明</strong>。
+                    這就是「上下文工程」的一部分。
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 4: 上下文工程 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2 class="section-title">上下文工程 (Context Engineering)</h2>
+            </div>
+
+            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem;">
+                上下文工程是影片的核心重點之一，它超越了傳統的「提示詞工程」，是一套系統化設計、收集、儲存、管理和使用上下文資訊的方法論。
+            </p>
+
+            <div class="card-full">
+                <h3>📐 從提示詞工程到上下文工程</h3>
+                <p>
+                    在 LLM 發展初期，提示詞工程（Prompt Engineering）主要透過精心設計的指令來引導模型生成期望的輸出。
+                    但隨著 AI 應用複雜度提升，單一提示詞已無法滿足需求。上下文工程將關注點從單一提示設計擴展到
+                    <strong style="color: var(--success);">整個上下文生命週期的管理</strong>，包括上下文的構建、選擇、優化、更新和維護等多個環節。
+                </p>
+            </div>
+
+            <div class="card-grid" style="margin-top: 20px;">
+                <div class="card">
+                    <span class="card-icon">🔍</span>
+                    <h3>上下文檢索與生成</h3>
+                    <ul>
+                        <li>提示詞工程設計</li>
+                        <li>外部知識檢索 (RAG)</li>
+                        <li>動態上下文組裝</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <span class="card-icon">⚙️</span>
+                    <h3>上下文處理</h3>
+                    <ul>
+                        <li>長序列優化</li>
+                        <li>自優化機制</li>
+                        <li>多模態融合與結構化整合</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <span class="card-icon">📦</span>
+                    <h3>上下文管理</h3>
+                    <ul>
+                        <li>高效組織與壓縮</li>
+                        <li>資訊調度全流程優化</li>
+                        <li>確保回應品質</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🚀</span>
+                    <h3>Offload Context</h3>
+                    <ul>
+                        <li>將資訊轉移到外部儲存</li>
+                        <li>模型只在需要時調用</li>
+                        <li>不必一直持有全部原始上下文</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 24px;">
+                <h4>🚧 上下文的核心挑戰</h4>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 10px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0; color: var(--accent-primary);">❶</span>
+                        <strong>上下文窗口限制</strong> — LLM 的上下文窗口有限，超出範圍的資訊會被「遺忘」
+                    </li>
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 10px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0; color: var(--accent-primary);">❷</span>
+                        <strong>資訊稀釋與過載</strong> — 大量重複、低價值的文字會使模型注意力分散，無法做決策
+                    </li>
+                    <li style="padding-left: 20px; position: relative; margin-bottom: 10px; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0; color: var(--accent-primary);">❸</span>
+                        <strong>效能下降與成本增加</strong> — 處理更長的上下文 = 更多 Token 費用、更慢的回應速度
+                    </li>
+                    <li style="padding-left: 20px; position: relative; color: var(--text-secondary);">
+                        <span style="position: absolute; left: 0; color: var(--accent-primary);">❹</span>
+                        <strong>非確定性</strong> — LLM 基於機率統計，行為具有天然不確定性，維護成本高
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: 記憶體系 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2 class="section-title">記憶體系 (Memory System)</h2>
+            </div>
+
+            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1.05rem;">
+                記憶系統是 AI Agent 的核心組成部分，讓 LLM 從「聊天機器人」進化為「智能體」—
+                能夠克服無狀態的局限性，實現經驗驅動的推理、持續優化策略和更深層次的語境理解。
+            </p>
+
+            <!-- Memory Types -->
+            <div class="card-full">
+                <h3>🧠 記憶的分類</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>記憶類型</th>
+                                <th>說明</th>
+                                <th>特點</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>短期記憶</strong><br>(Working Memory)</td>
+                                <td>儲存當前任務或會話中的資訊</td>
+                                <td>容量有限、受上下文窗口限制；利用快取和 In-Context Learning</td>
+                            </tr>
+                            <tr>
+                                <td><strong>長期記憶</strong><br>(Long-term Memory)</td>
+                                <td>長時間保留的知識庫</td>
+                                <td>支援跨會話檢索；依賴向量資料庫、知識圖譜、文件系統</td>
+                            </tr>
+                            <tr>
+                                <td><strong>情景記憶</strong><br>(Episodic Memory)</td>
+                                <td>過去的歷史事件流和行為經驗</td>
+                                <td>用於從經驗中學習和改進決策</td>
+                            </tr>
+                            <tr>
+                                <td><strong>語義記憶</strong><br>(Semantic Memory)</td>
+                                <td>基礎知識、世界知識</td>
+                                <td>提供通用背景知識支持</td>
+                            </tr>
+                            <tr>
+                                <td><strong>程序記憶</strong><br>(Procedural Memory)</td>
+                                <td>Agent 行為的規則集和程序</td>
+                                <td>定義 Agent 如何行動的 SOP 知識</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Memory Implementation -->
+            <div class="card-full">
+                <h3>💾 記憶的實現形式</h3>
+                <div class="card-grid" style="margin-top: 16px;">
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>📝 文本記憶</h3>
+                        <p>以自然語言形式存儲在外部資料庫中，最常見且最易解釋。</p>
+                    </div>
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>🧬 參數記憶</h3>
+                        <p>將資訊直接編碼進模型參數中（預訓練、SFT、LoRA 等方式注入）。</p>
+                    </div>
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>🔮 潛在記憶</h3>
+                        <p>隱式承載在模型內部（KV Cache、Hidden States、Latent Embeddings）。</p>
+                    </div>
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>📊 摘要記憶</h3>
+                        <p>將長對話內容提煉為關鍵摘要存儲，降低儲存和檢索成本。</p>
+                    </div>
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>🗃️ 結構化知識庫</h3>
+                        <p>使用資料庫或知識圖譜存儲結構化資訊，支持精確查詢。</p>
+                    </div>
+                    <div class="card" style="background: rgba(22, 33, 62, 0.7);">
+                        <h3>🧲 向量化存儲</h3>
+                        <p>透過向量資料庫實現基於語義的記憶檢索，適合模糊查詢。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory Tools -->
+            <div class="card-full">
+                <h3>🛠️ 記憶工具與框架</h3>
+                <ul>
+                    <li><strong>Mem0</strong> — 開源記憶框架，支援工作記憶、事實記憶、情景記憶、語義記憶等，提供智慧 LLM 提取、過濾和衰減機制</li>
+                    <li><strong>分層記憶 (Hierarchical Memory)</strong> — 將資訊組織為多層結構，實現粗粒度到細粒度的按需存取（如 MemGPT、MemoryOS）</li>
+                    <li><strong>基於圖的記憶 (Graph-based Memory)</strong> — 將資訊組織為圖結構，支援高效的多跳查詢（如 GraphReader、KG-Agent）</li>
+                    <li><strong>工作記憶折疊 (Working Memory Folding)</strong> — 透過壓縮歷史交互為結構化的記憶來解決記憶膨脹問題（如 DeepAgent）</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: 實操流程 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2 class="section-title">實操建構流程</h2>
+            </div>
+
+            <div class="card-full">
+                <h3>🏃 從零到一搭建 Agent 的建議步驟</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">1</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>明確問題，評估是否真的需要 Agent</h4>
+                            <p>先嘗試用簡單方案（API 呼叫、Workflow）解決，避免過度工程化。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">2</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>設計簡單的 System Prompt</h4>
+                            <p>從最小可用的提示詞開始，不要一開始就寫幾十頁的指令。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">3</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>引入工具 (Tools) 增強 Agent 能力</h4>
+                            <p>根據需要逐步加入工具呼叫能力，每次只加一個工具並測試。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">4</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>做上下文工程（Context Engineering）</h4>
+                            <p>透過隔離任務來提高效率，管理好輸入到 LLM 的資訊品質和數量。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">5</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>引入記憶體 (Memory) 機制</h4>
+                            <p>解決處理長文本內容和維持會話連貫性的問題。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">6</div>
+                            <div class="flow-line"></div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>設計儲存策略</h4>
+                            <p>決定資訊的內部記憶 vs 外部儲存策略，平衡效能與成本。</p>
+                        </div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-connector">
+                            <div class="flow-dot">7</div>
+                        </div>
+                        <div class="flow-content">
+                            <h4>調試與評估</h4>
+                            <p>記錄 Agent 運行的全過程，便於問題排查和持續優化。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: 調試與評估 -->
+        <section class="section reveal">
+            <div class="section-header">
+                <div class="section-number">7</div>
+                <h2 class="section-title">調試與評估</h2>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <span class="card-icon">📋</span>
+                    <h3>記錄全過程</h3>
+                    <p>記錄 Agent 運行的每一步，包括輸入、輸出、工具呼叫、決策過程，便於事後分析和問題排查。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🔄</span>
+                    <h3>迭代優化</h3>
+                    <p>基於日誌和觀察結果，持續微調 System Prompt、工具描述、上下文管理策略，逐步提升 Agent 表現。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">📊</span>
+                    <h3>建立評估指標</h3>
+                    <p>定義明確的成功標準，衡量 Agent 在真實場景中的表現，而非僅看 Demo 效果。</p>
+                </div>
+                <div class="card">
+                    <span class="card-icon">🛡️</span>
+                    <h3>容錯設計</h3>
+                    <p>LLM 行為具有不確定性，需要設計錯誤處理、回退機制和人工介入節點。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Takeaway -->
+        <section class="section reveal">
+            <div class="takeaway">
+                <h3>影片總結</h3>
+                <p>
+                    AI Agent 開發應該務實、迭代且避免過度工程。聚焦於理解 Agent 真正適用的場景，
+                    並在實際開發中有效管理指令（Prompt）、工具（Tools）、上下文（Context）和記憶（Memory）。
+                    <br><br>
+                    <strong style="color: var(--accent-primary);">「不要照搬神文，要從自己的實際問題出發。」</strong>
+                </p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            報告來源：<a href="https://www.youtube.com/watch?v=b_9D7T0n4RA" target="_blank">YouTube — 數字黑魔法</a>
+            &nbsp;|&nbsp; 報告生成時間：2026-02-17
+        </p>
+        <p style="margin-top: 8px;">
+            本報告為影片內容整理，不構成任何投資建議。DYOR。
+        </p>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
