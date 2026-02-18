@@ -106,6 +106,18 @@ cd C:\path\to\your\new-project
 - AI 切換交接清單
 - 新 AI 啟動流程
 
+## 🧭 工程師實作與交付流程（PR/CI 版）
+- 以 `ai/<工程師>/<任務>` 分支開發，不直接在 `surprise/bootstrap` 上提交。
+- 每次提交前先補齊需求理解、最小影響檢查，並完成本地 build / 功能 smoke。
+- 每個分支必須先完成 `preview` 自我驗證後再提 PR。
+- 預覽網址規則：`https://sp-staging.kwanxin.com/p/<github-username>/<分支名>/`（例如 `/p/jakson/510-fix-api-syntax/`）。
+- 確認項目至少包含登入與授權 API（`/api/auth/me`, `/api/auth/login`）回應正常、目標頁面主流程可載入、主要 API（例如 `GET /api/stock/movements`）不再回 500，以及新增或變更功能可重複操作且不殘留舊快取錯誤。
+- 所有 preview 變更先回報 PM，由 PM 回覆「可上線」後才進入合併流程。
+- PR 建立時務必附上變更摘要、風險、回退方案、影像或截圖證據、測試步驟與結果（包含 smoke/healthcheck）。
+- PR 必須通過 CI（含部署健康檢查）才可合併到 `surprise/bootstrap`。
+- 不得在 `deploy/healthcheck failed` 未修正前發佈到正式或繼續宣告完成。
+- 合併後以 staging 實際觀測結果覆核一次，作為版本收斂前最後回路。
+
 ### 📋 新專案開發流程
 - 完整的開新專案 SOP（Repo → 開發端 → CI/CD → 伺服端 → 驗收）
 - 多工程師協作（分支策略、衝突預防、小 PR 原則）
