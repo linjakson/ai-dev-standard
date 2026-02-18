@@ -25,6 +25,7 @@
 ├── CLAUDE.md                          ← Claude Code 專屬擴展
 ├── GEMINI.md                          ← Gemini CLI 專屬擴展
 ├── 新專案開發流程規範.html              ← 開發流程規範（HTML 視覺化版）
+├── github-project-lifecycle-sop.md      ← GitHub 權限/PR/合併完整 SOP（實戰版）
 ├── 為什麼這樣規劃_設計理念說明.html  ← 規則設計理念與背景知識
 ├── init-project.sh                    ← 一鍵初始化腳本（Linux/Mac）
 ├── init-project.ps1                   ← 一鍵初始化腳本（Windows）
@@ -110,7 +111,7 @@ cd C:\path\to\your\new-project
 - 以 `ai/<工程師>/<任務>` 分支開發，不直接在 `surprise/bootstrap` 上提交。
 - 每次提交前先補齊需求理解、最小影響檢查，並完成本地 build / 功能 smoke。
 - 每個分支必須先完成 `preview` 自我驗證後再提 PR。
-- 預覽網址規則：`https://sp-staging.kwanxin.com/p/<github-username>/<分支名>/`（例如 `/p/jakson/510-fix-api-syntax/`）。
+- 預覽網址規則（`ai/<engineer>/<task>`）：`https://sp-staging.kwanxin.com/p/<engineer>/<task>/`（例如 `ai/jakson/510-fix-api-syntax` 對應 `/p/jakson/510-fix-api-syntax/`）。
 - 確認項目至少包含登入與授權 API（`/api/auth/me`, `/api/auth/login`）回應正常、目標頁面主流程可載入、主要 API（例如 `GET /api/stock/movements`）不再回 500，以及新增或變更功能可重複操作且不殘留舊快取錯誤。
 - 所有 preview 變更先回報 PM，由 PM 回覆「可上線」後才進入合併流程。
 - PR 建立時務必附上變更摘要、風險、回退方案、影像或截圖證據、測試步驟與結果（包含 smoke/healthcheck）。
@@ -123,6 +124,7 @@ cd C:\path\to\your\new-project
 - 多工程師協作（分支策略、衝突預防、小 PR 原則）
 - AI 第一關 Review + 老闆最終 Approve 的雙層審核
 - 詳見：[新專案開發流程規範.html](./新專案開發流程規範.html)
+- GitHub 權限與合併實戰 SOP（開新專案 → 工程師加入 → 提交修改 → 管理者合併）：[github-project-lifecycle-sop.md](./github-project-lifecycle-sop.md)
 
 ---
 

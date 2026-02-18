@@ -294,6 +294,8 @@ CLAUDE.md                  GEMINI.md
 - 私有 repo 若要平台強制主線保護，至少使用 GitHub Team 方案。
 - 工程師與 AI 不得共用管理者帳號、PAT 或 SSH 金鑰。
 - 工程師角色預設為 `Write`，不得給 `Admin`；管理者才可進入 bypass 清單。
+- 工程師需先加入為 `Organization member`，不能只停留在 `Outside collaborator`。
+- 若組織啟用 fine-grained PAT 審核，管理者必須核准工程師 PAT request 後才可使用。
 
 ### Repo 層（每個新專案必做）
 - 對主線（例如 `main`、`surprise/bootstrap`）建立 branch ruleset，且 `enforcement=active`。
@@ -302,15 +304,18 @@ CLAUDE.md                  GEMINI.md
   - 1 個種子檢查（例如 `seed-required-check`，用於讓 ruleset 可穩定選取）
   - 1 個正式 CI 檢查（例如 `web-build-check`）
 - 必須啟用 `strict required status checks`（分支需與目標分支最新狀態同步驗證）。
+- 規則建立後需實測：工程師直推主線必須失敗、推 `ai/<工程師>/<任務>` 分支必須成功。
 
 ### 驗收與交付（每次新專案啟動時都要做）
 - 用工程師帳號驗證：`git push origin HEAD:<主線>` 必須被拒絕。
 - 建立 PR 驗證：未達 approval 數、或 required checks 未通過時，必須無法 merge。
 - 僅在上述驗收完成後，才可宣告主線治理完成。
+- 預覽驗證網址需使用 `ai/<engineer>/<task>` 對應的 `/p/<engineer>/<task>/`，不可誤用 `/p/<org>/<完整分支>/`。
 
 ### Token 安全（強制）
 - PAT 必須使用 fine-grained、最小權限、最短有效期。
 - Token 不得出現在對話、文件、commit；若外洩需立即 `revoke + rotate`。
+- 完整流程與逐步操作細節請參考：`github-project-lifecycle-sop.md`。
 
 ---
 
