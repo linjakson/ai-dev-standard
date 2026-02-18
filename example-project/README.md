@@ -51,3 +51,12 @@ powershell -File ..\Agent指南\init-project.ps1
 2. 根據專案類型調整 `.github/workflows/ci.yml`
 3. 填寫 `.ai-memory/architecture.md` 的技術棧資訊
 4. 填寫 `.ai-memory/setup.md` 的環境設定
+
+## 佈署與核可節奏（建議）
+
+1. 工程師完成開發後，先推到 `ai/<工程師>/<任務>` 分支做自我驗證（含前端/API 驗收）。
+2. 將預覽結果提交給 PM，由 PM 做最終確認。
+3. 確認無虞後透過 PR 合併到整合分支。
+4. 以 `CI` 成功作為合併條件，合併後再進行後續環境部署。
+
+此流程可將「先確認品質」與「最後權責」分開，避免非預期直接推上主線。
