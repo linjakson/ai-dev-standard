@@ -286,6 +286,32 @@ CLAUDE.md                  GEMINI.md
 - CI 需通過所有檢查，尤其不可忽略部署健康檢查（如 `deploy/healthcheck`）；一旦失敗，禁止再宣告可發佈。
 - 分支合併原則：工程師可有一次自我驗證與提交，PM 最終核准後，才進入合併/部署。
 
+## 🔒 新專案主線保護（強制落地）
+
+> 以下為每個新專案上線前的「必做技術鎖」，不可只靠口頭規範。
+
+### 組織層（一次性設定）
+- 私有 repo 若要平台強制主線保護，至少使用 GitHub Team 方案。
+- 工程師與 AI 不得共用管理者帳號、PAT 或 SSH 金鑰。
+- 工程師角色預設為 `Write`，不得給 `Admin`；管理者才可進入 bypass 清單。
+
+### Repo 層（每個新專案必做）
+- 對主線（例如 `main`、`surprise/bootstrap`）建立 branch ruleset，且 `enforcement=active`。
+- 必須啟用：`Restrict updates`、`Restrict deletions`、`Require a pull request before merging`、`Block force pushes`。
+- 必須設定 required status checks（至少 2 個）：
+  - 1 個種子檢查（例如 `seed-required-check`，用於讓 ruleset 可穩定選取）
+  - 1 個正式 CI 檢查（例如 `web-build-check`）
+- 必須啟用 `strict required status checks`（分支需與目標分支最新狀態同步驗證）。
+
+### 驗收與交付（每次新專案啟動時都要做）
+- 用工程師帳號驗證：`git push origin HEAD:<主線>` 必須被拒絕。
+- 建立 PR 驗證：未達 approval 數、或 required checks 未通過時，必須無法 merge。
+- 僅在上述驗收完成後，才可宣告主線治理完成。
+
+### Token 安全（強制）
+- PAT 必須使用 fine-grained、最小權限、最短有效期。
+- Token 不得出現在對話、文件、commit；若外洩需立即 `revoke + rotate`。
+
 ---
 
 ## 🚫 邊界規則
