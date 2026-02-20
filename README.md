@@ -119,6 +119,9 @@ cd C:\path\to\your\new-project
 - PR 建立時務必附上變更摘要、風險、回退方案、影像或截圖證據、測試步驟與結果（包含 smoke/healthcheck）。
 - PR 必須通過 CI（含部署健康檢查）才可合併到 `surprise/bootstrap`。
 - 每次 PR（含更新 commit 後）都必須維持 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
+  - required checks 只接受 `success`；`expected`/`pending`/`neutral`/`skipped`/`cancelled` 均視為未通過。
+  - PR 必須無衝突且可合併（若顯示 `Checks awaiting conflict resolution` 則先解衝突）。
+  - required approvals 與 unresolved conversations 必須達標，且 strict required checks 專案需先同步分支再重跑檢查。
 - 不得在 `deploy/healthcheck failed` 未修正前發佈到正式或繼續宣告完成。
 - 合併後以 staging 實際觀測結果覆核一次，作為版本收斂前最後回路。
 

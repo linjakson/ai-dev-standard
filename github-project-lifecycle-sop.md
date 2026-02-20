@@ -101,11 +101,13 @@
 ## 10. 管理者合併流程
 
 1. 開 PR 頁面，先看 `Files changed` 確認範圍。
-2. 檢查 required checks 全綠（包含最新 push 後的重跑結果）。
-3. 確認 approvals 達標（例如 2 個）。
-4. 確認 conversation 都 resolved。
-5. `Merge pull request`（或 `Squash and merge`，依專案規範）。
-6. 合併後到 staging 做一次 smoke 驗證。
+2. 檢查 required checks 全綠（僅 `success` 算通過；`expected`/`pending`/`neutral`/`skipped`/`cancelled` 都不算）。
+3. 檢查 PR 必須無衝突且可合併（若顯示 `Checks awaiting conflict resolution`，先解衝突）。
+4. 若專案啟用 strict required checks，先確認分支已同步目標分支後重跑檢查。
+5. 確認 approvals 達標（例如 2 個）。
+6. 確認 conversation 都 resolved。
+7. `Merge pull request`（或 `Squash and merge`，依專案規範）。
+8. 合併後到 staging 做一次 smoke 驗證。
 
 ## 11. 權限與安全守則
 
@@ -135,6 +137,12 @@
 
 1. URL 用錯（應用 `/p/<engineer>/<task>/`）。
 2. 深路徑 fallback 尚未部署完成，先從 preview 根路徑進入再操作。
+
+### Q4. 顯示 `Checks awaiting conflict resolution`
+
+1. 這不是「全綠」，代表 PR 與目標分支有衝突，required checks 會停在 `Expected/Waiting`。
+2. 先更新分支（merge/rebase 目標分支）並解完衝突，再 push 觸發 checks 重跑。
+3. 重跑後仍需同時滿足 approvals 與 conversation resolved，才可合併。
 
 ---
 

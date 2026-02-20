@@ -287,6 +287,10 @@ CLAUDE.md                  GEMINI.md
 - PR 審核前必填變更摘要與風險、PM 回覆的核可結果、最小驗證步驟與結果、回滾方案。
 - CI 需通過所有檢查，尤其不可忽略部署健康檢查（如 `deploy/healthcheck`）；一旦失敗，禁止再宣告可發佈。
 - 每次 PR（含更新 commit 後）都必須保持 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
+  - 「全綠」只接受 required checks 為 `success`；`expected`、`pending`、`neutral`、`skipped`、`cancelled` 一律視為未通過。
+  - PR 必須可合併且無衝突；若出現 `Checks awaiting conflict resolution` 或 `mergeStateStatus=DIRTY`，必須先解衝突。
+  - 若 ruleset 啟用 strict required checks，分支落後目標分支時，必須先 update branch（merge/rebase）再重跑 required checks。
+  - required review/approval 與 unresolved conversations 也屬於合併必要門檻，任一未達標皆不可宣告完成。
 - 分支合併原則：工程師可有一次自我驗證與提交，PM 最終核准後，才進入合併/部署。
 
 ## 🔒 新專案主線保護（強制落地）
