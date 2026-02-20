@@ -76,16 +76,18 @@
 2. 完成功能後 commit + push 到該分支。
 3. 驗證 Preview：
    - `https://sp-staging.kwanxin.com/p/<engineer>/<task>/`
-4. 必測清單：
+4. 每次修改完成回報（含中間交付）必須附上「合併前預覽網址」，且只需提供本次修改目標頁（若有指定單號/ID 需附完整路徑；除非另外要求，不需附分支入口或列表頁）。
+5. 必測清單：
    - `/api/auth/me`
    - `/api/auth/login`
    - 目標頁主流程
    - 相關 API 無 500
-5. 建 PR，附上：
+6. 建 PR，附上：
    - 變更摘要
    - 風險
    - 測試步驟/結果
    - 回滾方案
+7. PR 建立後每次更新 commit 都要重新確認 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
 
 ## 9. Preview URL 規則（避免用錯）
 
@@ -99,7 +101,7 @@
 ## 10. 管理者合併流程
 
 1. 開 PR 頁面，先看 `Files changed` 確認範圍。
-2. 檢查 required checks 全綠。
+2. 檢查 required checks 全綠（包含最新 push 後的重跑結果）。
 3. 確認 approvals 達標（例如 2 個）。
 4. 確認 conversation 都 resolved。
 5. `Merge pull request`（或 `Squash and merge`，依專案規範）。

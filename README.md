@@ -113,9 +113,12 @@ cd C:\path\to\your\new-project
 - 每個分支必須先完成 `preview` 自我驗證後再提 PR。
 - 預覽網址規則（`ai/<engineer>/<task>`）：`https://sp-staging.kwanxin.com/p/<engineer>/<task>/`（例如 `ai/jakson/510-fix-api-syntax` 對應 `/p/jakson/510-fix-api-syntax/`）。
 - 確認項目至少包含登入與授權 API（`/api/auth/me`, `/api/auth/login`）回應正常、目標頁面主流程可載入、主要 API（例如 `GET /api/stock/movements`）不再回 500，以及新增或變更功能可重複操作且不殘留舊快取錯誤。
+- 每次修改完成回報（含中間交付）必須附上「合併前預覽網址」，且只需提供本次修改目標頁（若有指定單號/ID 需附完整路徑）。
+- 除非使用者另外要求，不需主動提供分支入口、列表頁或模組首頁預覽網址。
 - 所有 preview 變更先回報 PM，由 PM 回覆「可上線」後才進入合併流程。
 - PR 建立時務必附上變更摘要、風險、回退方案、影像或截圖證據、測試步驟與結果（包含 smoke/healthcheck）。
 - PR 必須通過 CI（含部署健康檢查）才可合併到 `surprise/bootstrap`。
+- 每次 PR（含更新 commit 後）都必須維持 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
 - 不得在 `deploy/healthcheck failed` 未修正前發佈到正式或繼續宣告完成。
 - 合併後以 staging 實際觀測結果覆核一次，作為版本收斂前最後回路。
 
