@@ -61,6 +61,9 @@ powershell -File ..\Agent指南\init-project.ps1
 5. 將驗證截圖與結果回報 PM，由 PM 給最終「可上線」判定。
 6. 通過後提 PR 到 `surprise/bootstrap`，並要求 CI 完全通過（含 `/api` 健檢與 healthcheck）。
 7. PR 建立後每次更新 commit 都要確認 required checks 全綠；任一檢查非綠燈時，禁止宣告完成或請求合併。
+   - required checks 只接受 `success`；`expected`/`pending`/`neutral`/`skipped`/`cancelled` 都視為未通過。
+   - PR 必須無衝突且可合併（若顯示 `Checks awaiting conflict resolution`，先解衝突）。
+   - required approvals 與 unresolved conversations 必須達標，strict required checks 專案需先同步分支再重跑檢查。
 8. 以 PM 最終核准為前提完成 merge，並於 merge 後回報 staging 覆核結果。
 
 此流程可將「開發者自我驗證」與「PM 最終核可」分層，避免未授權直接推上主線或未測回歸的代碼上線。
