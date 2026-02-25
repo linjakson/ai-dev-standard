@@ -144,6 +144,15 @@
 2. 先更新分支（merge/rebase 目標分支）並解完衝突，再 push 觸發 checks 重跑。
 3. 重跑後仍需同時滿足 approvals 與 conversation resolved，才可合併。
 
+## 13. Skill 與記憶中樞落地（跨工具）
+
+1. 建立 skill 中央倉（例如 `ai-skills`），集中管理自製 skill。
+2. 建立記憶中央倉（例如 `ai-memory-hub`），集中保存所有專案歷史事件。
+3. 在專案入口檔（AGENTS/CLAUDE/CODEX/GEMINI/ANTIGRAVITY）宣告必裝 `memory-hub-sync`。
+4. 每次任務開始先做 preflight 讀歷史；任務結束追加 success/failed case。
+5. 記錄必須 append-only（不可改寫舊事件）；更正採新增 correction 事件。
+6. 新增任何 skill 時，四環境安裝流程都要寫清楚，否則不得視為完成交付。
+
 ---
 
 ## 最小落地清單（給管理者快速核對）

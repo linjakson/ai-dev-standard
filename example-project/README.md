@@ -24,7 +24,10 @@ example-project/
 │       └── ci.yml           ← GitHub Actions CI 範本
 ├── AGENTS.md                ← AI 共用核心規則
 ├── CLAUDE.md                ← Claude 專屬擴展
+├── CODEX.md                 ← Codex 專屬擴展
 ├── GEMINI.md                ← Gemini 專屬擴展
+├── ANTIGRAVITY.md           ← Antigravity 專屬擴展
+├── skills-memory-standard.md ← Skill + ai-memory-hub 治理標準
 ├── CODEOWNERS               ← PR 審核指派（需修改 @owner）
 ├── .gitignore               ← Git 忽略規則
 └── README.md                ← 本文件
@@ -51,6 +54,8 @@ powershell -File ..\Agent指南\init-project.ps1
 2. 根據專案類型調整 `.github/workflows/ci.yml`
 3. 填寫 `.ai-memory/architecture.md` 的技術棧資訊
 4. 填寫 `.ai-memory/setup.md` 的環境設定
+5. 確認四環境入口檔（`CLAUDE.md` / `CODEX.md` / `GEMINI.md` / `ANTIGRAVITY.md`）都已就緒
+6. 依 `skills-memory-standard.md` 建立 skill 與記憶中樞連線
 
 ## 佈署與核可節奏（建議）
 
