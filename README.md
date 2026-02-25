@@ -6,7 +6,7 @@
 
 ## 📌 這是什麼？
 
-一套可直接複製到任何新專案根目錄的 **AI 編程助手規則檔案**，讓 Claude Code、Gemini CLI、GitHub Copilot 等工具在開發時自動遵循統一的工作規範。
+一套可直接複製到任何新專案根目錄的 **AI 編程助手規則檔案**，讓 Codex CLI、Claude Code、Gemini CLI、Antigravity IDE、GitHub Copilot 等工具在開發時自動遵循統一的工作規範。
 
 ### 核心理念
 - 🎯 **問題導向** — 從最小可行方案開始，拒絕過度設計
@@ -23,10 +23,13 @@
 ├── README.md                          ← 本文件
 ├── AGENTS.md                          ← 共用核心規則（Single Source of Truth）
 ├── CLAUDE.md                          ← Claude Code 專屬擴展
+├── CODEX.md                           ← Codex CLI 專屬擴展
 ├── GEMINI.md                          ← Gemini CLI 專屬擴展
+├── ANTIGRAVITY.md                     ← Antigravity IDE 專屬擴展
+├── skills-memory-standard.md          ← Skill + ai-memory-hub 治理標準草案
 ├── 新專案開發流程規範.html              ← 開發流程規範（HTML 視覺化版）
-├── github-project-lifecycle-sop.md      ← GitHub 權限/PR/合併完整 SOP（實戰版）
-├── 為什麼這樣規劃_設計理念說明.html  ← 規則設計理念與背景知識
+├── github-project-lifecycle-sop.md    ← GitHub 權限/PR/合併完整 SOP（實戰版）
+├── 為什麼這樣規劃_設計理念說明.html      ← 規則設計理念與背景知識
 ├── init-project.sh                    ← 一鍵初始化腳本（Linux/Mac）
 ├── init-project.ps1                   ← 一鍵初始化腳本（Windows）
 └── example-project/                   ← 範例專案模板（可直接複製使用）
@@ -36,16 +39,19 @@
 
 ```
 AGENTS.md（共用核心）
-  ↑ 繼承              ↑ 繼承
-CLAUDE.md            GEMINI.md
-（Claude 專屬）      （Gemini 專屬）
+  ↑ 繼承          ↑ 繼承         ↑ 繼承            ↑ 繼承
+CLAUDE.md        CODEX.md       GEMINI.md         ANTIGRAVITY.md
+（Claude 專屬）  （Codex 專屬） （Gemini 專屬）   （Antigravity 專屬）
 ```
 
 | 檔案 | 角色 | 內容 |
 |------|------|------|
 | **AGENTS.md** | 共用核心 | 需求決策樹、上下文工程、`.ai-memory/` 記憶管理、程式碼規範、邊界規則、跨 AI 協作規範 |
 | **CLAUDE.md** | 擴展 | 長上下文策略、子任務委派、結構化回寫、Prompt 迭代法 |
+| **CODEX.md** | 擴展 | Skill 優先觸發、最小變更策略、記憶回寫一致性 |
 | **GEMINI.md** | 擴展 | 分層指令架構、多模態運用、YAML 工具描述模板、效能追蹤指標 |
+| **ANTIGRAVITY.md** | 擴展 | IDE 任務啟動檢查、Skill 安裝檢核、記憶追溯要求 |
+| **skills-memory-standard.md** | 治理 | Skill 中央倉 + 記憶中央倉、append-only、成功/失敗案例記錄 |
 
 ---
 
@@ -73,7 +79,7 @@ cd C:\path\to\your\new-project
 
 ### 方法 3：手動設定
 
-1. 將 `AGENTS.md`、`CLAUDE.md`、`GEMINI.md` 複製到你的專案根目錄
+1. 將 `AGENTS.md`、`CLAUDE.md`、`CODEX.md`、`GEMINI.md`、`ANTIGRAVITY.md` 複製到你的專案根目錄
 2. 建立 `.ai-memory/` 目錄結構（參考 AGENTS.md）
 3. AI 工具啟動時會自動讀取對應的規則檔
 
@@ -81,8 +87,10 @@ cd C:\path\to\your\new-project
 
 | AI 工具 | 會讀取的檔案 |
 |---------|-------------|
+| **Codex CLI** | AGENTS.md → CODEX.md → `.ai-memory/` |
 | **Claude Code** | AGENTS.md → CLAUDE.md → `.ai-memory/` |
 | **Gemini CLI** | AGENTS.md → GEMINI.md → `.ai-memory/` |
+| **Antigravity IDE** | AGENTS.md → ANTIGRAVITY.md → `.ai-memory/` |
 | **GitHub Copilot / Cursor** | AGENTS.md → `.ai-memory/` |
 
 ---
@@ -97,6 +105,7 @@ cd C:\path\to\your\new-project
 - 上下文工程（資訊品質分級、卸載策略）
 - 工具描述標準格式
 - `.ai-memory/` 目錄化記憶管理
+- Skill 觸發流程與 `ai-memory-hub` 集中同步（append-only）
 
 ### 後期驗證（VERIFICATION）
 - 除錯 SOP（精確定位 → 最小重現 → 根因 → 最小修復）
@@ -148,6 +157,12 @@ cd C:\path\to\your\new-project
 
 ### 調整記憶目錄
 依據專案規模調整 `.ai-memory/` 的子目錄結構，但保持 `_index.md` 索引機制。
+
+### Skill + 記憶治理
+若專案要採用四環境共用 skill 與集中記憶，請依 `skills-memory-standard.md` 建立：
+- 獨立 skill 倉（`ai-skills`）
+- 獨立記憶倉（`ai-memory-hub`）
+- append-only 事件寫入與成功/失敗 case 留存
 
 ---
 

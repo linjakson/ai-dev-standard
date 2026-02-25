@@ -1,10 +1,10 @@
 # AGENTS.md — AI 編程助手專案預設規則（共用核心）
-# 適用於：所有 AI 編程工具（GitHub Copilot、Cursor、Claude Code、Gemini CLI 等）
+# 適用於：所有 AI 編程工具（Codex CLI、Claude Code、Gemini CLI、Antigravity IDE、GitHub Copilot、Cursor 等）
 # 版本：2.0 | 基於《那些 Agent 神文沒告訴你的事》實操方法論
 #
 # ⚠️ 本檔案是 Single Source of Truth
-# CLAUDE.md 和 GEMINI.md 繼承本檔案的所有規則，只定義各自專屬的能力擴展。
-# 修改共用規則請在本檔案修改，不要在 CLAUDE.md / GEMINI.md 中重複定義。
+# CLAUDE.md / CODEX.md / GEMINI.md / ANTIGRAVITY.md 繼承本檔案的所有規則，只定義各自專屬擴展。
+# 修改共用規則請在本檔案修改，不要在工具專屬檔案中重複定義。
 
 ---
 
@@ -132,6 +132,25 @@ Q3: 任務是否需要人工介入或有大量動態選項？
 └── coding-standards.md          ← 開發規範
 ```
 
+#### 集中記憶與 Skill 觸發治理（建議標準）
+
+- Skill 來源與記憶來源分離管理：
+  - Skill 中央倉：`https://github.com/<org>/ai-skills`
+  - Memory 中央倉：`https://github.com/<org>/ai-memory-hub`
+- 每個專案保留本地 `.ai-memory/` 作為工作快取，但最終記錄需同步到 `ai-memory-hub`。
+- 記憶紀錄必須採 **append-only**：
+  - 允許新增新事件
+  - 禁止直接改寫既有事件內容
+  - 若需更正，新增「更正事件」並指向原事件 ID
+- 記錄格式至少包含：`event_id`、`project`、`module`、`timestamp`、`actor`、`outcome(success|failed)`、`summary`。
+- 必記錄修復經驗：
+  - `failed_cases`：嘗試過但失敗的方案與原因
+  - `successful_cases`：最終可行解法、驗證方式與風險
+- 新需求以「Skill 觸發」優先，不依賴手動提示詞：
+  - 觸發前先做 memory preflight（讀歷史）
+  - 變更後自動記錄 fix case（寫歷史）
+  - 專案內按路徑分桶（例如 `projects/<repo>/<module>/events/*.jsonl`）
+
 #### 情景記憶（Episodic Memory）— lessons/
 
 記錄「做過什麼、結果如何」的經驗，讓 AI 從歷史中學習，避免重複犯錯：
@@ -169,18 +188,18 @@ Q3: 任務是否需要人工介入或有大量動態選項？
 
 ## 🤝 跨 AI 協作規範
 
-> 本專案可能由多個 AI 工具（Claude Code、Gemini CLI、Copilot 等）交替編輯。
+> 本專案可能由多個 AI 工具（Codex CLI、Claude Code、Gemini CLI、Antigravity IDE、Copilot 等）交替編輯。
 > 以下規範確保不同 AI 之間的工作可無縫銜接。
 
 ### 規則繼承架構
 ```
 AGENTS.md（本檔案 — 共用核心）
-  ↑ 繼承                    ↑ 繼承
-CLAUDE.md                  GEMINI.md
-（Claude 專屬擴展）        （Gemini 專屬擴展）
+  ↑ 繼承          ↑ 繼承         ↑ 繼承            ↑ 繼承
+CLAUDE.md        CODEX.md       GEMINI.md         ANTIGRAVITY.md
+（Claude）       （Codex）       （Gemini）        （Antigravity）
 ```
 
-- **共用規則** 統一在 AGENTS.md 定義，CLAUDE.md / GEMINI.md 不得重複
+- **共用規則** 統一在 AGENTS.md 定義，工具專屬檔案不得重複
 - **衝突時** 以 AGENTS.md 為準，除非工具專屬檔案有明確的覆寫說明
 - 每個 AI 啟動時，必須 **先讀取 AGENTS.md**，再讀取自己的專屬檔案
 
@@ -192,7 +211,8 @@ CLAUDE.md                  GEMINI.md
 ## 進度記錄格式
 - [2025-03-15 | Claude] 完成認證模組 API 端點（/api/auth/login, /register）
 - [2025-03-16 | Gemini] 修復登入表單驗證 Bug（issue #12）
-- [2025-03-17 | Copilot] 新增密碼強度檢查元件
+- [2025-03-17 | Codex] 新增密碼強度檢查元件
+- [2025-03-18 | Antigravity] 修正 IDE 任務模板初始化流程
 
 ## 決策記錄格式
 ### [2025-03-15 | Claude] 選擇 JWT 而非 Session
@@ -218,15 +238,24 @@ CLAUDE.md                  GEMINI.md
 ```
 新 AI 啟動時必做：
   1. 📖 讀取 AGENTS.md（共用規則）
-  2. 📖 讀取自己的專屬規則檔（CLAUDE.md 或 GEMINI.md）
+  2. 📖 讀取自己的專屬規則檔（CLAUDE.md / CODEX.md / GEMINI.md / ANTIGRAVITY.md）
   3. 📖 讀取 .ai-memory/progress/_index.md（全域進度）
   4. 📖 讀取最新的 .ai-memory/context/session-*.md（前次上下文）
   5. 📖 檢查 .ai-memory/issues/open.md（未解決問題）
   6. 🔄 向使用者確認當前任務目標
 ```
 
+### Skill 四環境對齊清單（強制）
+
+- 當新增任何 skill，必須同時提供四種入口與安裝文件：
+  - `CLAUDE.md` 的安裝與觸發步驟
+  - `CODEX.md` 的安裝與觸發步驟
+  - `GEMINI.md` 的安裝與觸發步驟
+  - `ANTIGRAVITY.md` 的安裝與觸發步驟
+- 任何一種環境缺安裝流程，該 skill 視為未完成交付。
+
 ### 禁止事項
-- 🚫 各 AI 不得建立私有的記憶檔案（如 `.claude-memory/`、`.gemini-notes/`）
+- 🚫 各 AI 不得建立私有的記憶檔案（如 `.claude-memory/`、`.codex-memory/`、`.gemini-notes/`、`.antigravity-memory/`）
 - 🚫 不得覆寫其他 AI 的決策記錄，只能追加或標記為「已廢棄」
 - 🚫 不得修改 AGENTS.md 中的共用規則（需使用者許可）
 
@@ -363,7 +392,10 @@ CLAUDE.md                  GEMINI.md
 專案根目錄/
 ├── AGENTS.md              ← 本檔案（共用核心規則）
 ├── CLAUDE.md              ← Claude Code 專屬擴展
+├── CODEX.md               ← Codex CLI 專屬擴展
 ├── GEMINI.md              ← Gemini CLI 專屬擴展
+├── ANTIGRAVITY.md         ← Antigravity IDE 專屬擴展
+├── skills-memory-standard.md ← skill 與集中記憶治理規範
 ├── .ai-memory/            ← 所有 AI 共用記憶庫
 │   ├── decisions/         ← 架構決策（按主題分檔）
 │   ├── progress/          ← 開發進度（按模組分檔）

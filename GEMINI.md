@@ -19,6 +19,18 @@
 
 ---
 
+## 🔌 必裝 Skill（memory）
+
+- 必裝 skill：`memory-hub-sync`
+- 安裝命令（建議統一入口）：
+  ```bash
+  bash scripts/install-skill.sh --skill memory-hub-sync --targets claude,codex,gemini,antigravity
+  ```
+- 任務開始先跑 preflight（先讀歷史），任務結束追加事件並同步到 `ai-memory-hub`。
+- 詳細治理規格請參考 `skills-memory-standard.md`。
+
+---
+
 ## 🔨 Gemini 專屬能力
 
 ### 分層指令架構

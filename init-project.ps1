@@ -202,9 +202,10 @@ Write-Host "🎉 專案初始化完成！" -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "📋 下一步："
-Write-Host "  1. 複製 AGENTS.md, CLAUDE.md, GEMINI.md 到專案根目錄"
+Write-Host "  1. 複製 AGENTS.md, CLAUDE.md, CODEX.md, GEMINI.md, ANTIGRAVITY.md 到專案根目錄"
 Write-Host "  2. 修改 CODEOWNERS 中的 @owner 為老闆的 GitHub 帳號"
 Write-Host "  3. 根據專案類型修改 .github/workflows/ci.yml"
-Write-Host "  4. git init; git add .; git commit -m 'init: 專案初始化'"
-Write-Host "  5. git remote add origin <repo-url>; git push -u origin main"
+Write-Host "  4. 參考 skills-memory-standard.md 配置 skill 與 ai-memory-hub"
+Write-Host "  5. git init; git add .; git commit -m 'init: 專案初始化'"
+Write-Host "  6. git remote add origin <repo-url>; git push -u origin main"
 Write-Host ""
