@@ -260,6 +260,8 @@ CLAUDE.md        CODEX.md       GEMINI.md         ANTIGRAVITY.md
 - 開發前先完成分支預覽規劃：先確認可回歸頁面與 API；若涉及分頁 API，需有可重放測試步驟。
 - 先在預覽環境完成自我驗證，僅能在 PM 核准後提交到整合 PR。
 - 分支預覽網址（`ai/<engineer>/<task>`）：`https://<your-staging-domain>/p/<engineer>/<task>/`。
+- 實際 preview host / path / 必測端點 必須由 `AGENTS.local.md` 宣告；不得默認複製其他專案的 staging 網址。
+- Canonical preview 必須是專案自有、可持續的 URL；`ngrok` / `localtunnel` / `localhost.run` 僅可作臨時示意，不可取代正式 PR preview。
 - 分支預覽必驗證核心頁面可讀取、重點 API 不回傳 500（或有明確容錯訊息）、且無明顯快取殘留。具體驗證端點請定義在 `AGENTS.local.md`。
 - 每次修改完成回報（含中間交付）都必須附上「合併前預覽網址」，且只需提供「本次修改目標頁」網址（若有指定單號/ID，需附帶該路徑）。
 - 除非使用者另外要求，不需主動附分支入口、列表頁或模組首頁。

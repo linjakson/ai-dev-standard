@@ -144,9 +144,12 @@ curl -sL https://raw.githubusercontent.com/<your-org>/ai-dev-standard/main/enabl
 - 每次提交前先補齊需求理解、最小影響檢查，並完成本地 build / 功能 smoke。
 - 每個分支必須先完成 `preview` 自我驗證後再提 PR。
 - 預覽網址規則（`ai/<engineer>/<task>`）：`https://<your-staging-domain>/p/<engineer>/<task>/`。
+- 專案必須在 `AGENTS.local.md` 宣告 preview 契約：`preview_mode`、`preview_base_url` / `preview_url_template`、branch/slug 規則、目標頁回報規則、以及 preview 必測端點。
+- Canonical preview 必須是專案自有、可持續的 URL；建議使用專屬 preview/staging host，或受控的隔離路徑。`ngrok` / `localtunnel` / `localhost.run` 只能當臨時示意，不可作為正式 PR preview 標準。
 - 確認項目至少包含登入與授權 API（`/api/auth/me`, `/api/auth/login`）回應正常、目標頁面主流程可載入、主要 API（例如 `GET /api/stock/movements`）不再回 500，以及新增或變更功能可重複操作且不殘留舊快取錯誤。
 - 每次修改完成回報（含中間交付）必須附上「合併前預覽網址」，且只需提供本次修改目標頁（若有指定單號/ID 需附完整路徑）。
 - 除非使用者另外要求，不需主動提供分支入口、列表頁或模組首頁預覽網址。
+- 若專案尚未有穩定 preview，`AGENTS.local.md` 必須改標 `preview_mode: fallback_artifact`，並同步列出暫行驗證方式與建立 preview 基礎設施的追蹤任務。
 - 所有 preview 變更先回報 PM，由 PM 回覆「可上線」後才進入合併流程。
 - PR 建立時務必附上變更摘要、風險、回退方案、影像或截圖證據、測試步驟與結果（包含 smoke/healthcheck）。
 - PR 必須通過 CI（含部署健康檢查）才可合併到 `主線分支`。

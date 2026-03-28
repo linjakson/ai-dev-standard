@@ -326,6 +326,9 @@ CLAUDE.md        CODEX.md       GEMINI.md         ANTIGRAVITY.md
 - 任何功能修正先在 feature branch 開發（建議命名格式：`ai/<工程師>/<任務>`，或依專案慣例）。
 - 開發前先完成分支預覽規劃：確認可回歸頁面與 API。
 - 先在預覽環境完成自我驗證，經審核者核准後才提交合併。
+- 每個專案都必須在 `AGENTS.local.md` 宣告 preview 契約，至少包含：`preview_mode`、`preview_base_url` 或 `preview_url_template`、branch/slug 規則、目標頁回報規則、以及 preview 必測端點。
+- Canonical preview 必須是專案可重現、可持續的 URL，且應部署在專案自有的 preview/staging host 或受控的隔離路徑；不得把 `ngrok`、`localtunnel`、`localhost.run` 之類臨時 tunnel 當成 merge gate 的正式 preview。
+- 若專案尚未具備穩定 preview，`AGENTS.local.md` 必須明確標示暫行 fallback（例如截圖、artifact、手動 smoke）與對應的追蹤 change / task，不能只口頭宣稱「目前沒有 preview」。
 - 每次修改完成回報（含中間交付）都必須附上「合併前預覽網址」。
 - PR 審核前必填：變更摘要、風險評估、最小驗證步驟與結果、回滾方案。
 - CI 需通過所有檢查；一旦失敗，禁止宣告可發佈。

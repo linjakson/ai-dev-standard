@@ -78,18 +78,21 @@
 2. 完成功能後 commit + push 到該分支。
 3. 驗證 Preview：
    - `https://<your-staging-domain>/p/<engineer>/<task>/`
+   - 實際 host / path / 深連結規則必須由專案在 `AGENTS.local.md` 宣告，不得默認沿用其他專案的 preview 網址。
+   - Canonical preview 必須使用專案自有、可持續的 URL；`ngrok` / `localtunnel` / `localhost.run` 只能當臨時示意，不可視為正式 PR preview。
 4. 每次修改完成回報（含中間交付）必須附上「合併前預覽網址」，且只需提供本次修改目標頁（若有指定單號/ID 需附完整路徑；除非另外要求，不需附分支入口或列表頁）。
-5. 必測清單：
+5. 若專案尚未有穩定 preview，`AGENTS.local.md` 必須標示 `preview_mode: fallback_artifact`，並記錄暫行驗證方式與建立 preview 基礎設施的追蹤 task。
+6. 必測清單：
    - `/api/auth/me`
    - `/api/auth/login`
    - 目標頁主流程
    - 相關 API 無 500
-6. 建 PR，附上：
+7. 建 PR，附上：
    - 變更摘要
    - 風險
    - 測試步驟/結果
    - 回滾方案
-7. PR 建立後每次更新 commit 都要重新確認 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
+8. PR 建立後每次更新 commit 都要重新確認 required checks 全綠；任一檢查非綠燈時，禁止宣告完成、禁止請求合併。
 
 ## 9. Preview URL 規則（避免用錯）
 
@@ -139,6 +142,12 @@
 
 1. URL 用錯（應用 `/p/<engineer>/<task>/`）。
 2. 深路徑 fallback 尚未部署完成，先從 preview 根路徑進入再操作。
+
+### Q3-1. 為什麼不能直接拿 tunnel URL 當正式 preview
+
+1. `ngrok` / `localtunnel` / `localhost.run` 類網址通常是短生命週期，不符合 PR 審核需要的可重現性。
+2. 這類網址不屬於專案自有 host，無法作為長期治理、PM 驗收與 merge gate 的穩定依據。
+3. 若只能先用 tunnel 示意，必須在回報中明確標示為臨時 demo，且同步建立正式 preview 基礎設施的追蹤任務。
 
 ### Q4. 顯示 `Checks awaiting conflict resolution`
 
